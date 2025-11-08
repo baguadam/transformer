@@ -6,12 +6,12 @@ def calculate_positional_encoding(seq_len: int, dim: int, N: int=10000) -> Tenso
     Calculates the sinusoidal encoding of the given sequence.
 
     Args:
-        seq_len: (int) Length of the sequence.
-        dim: (int) Dimension of the model.
-        N: (int) Denomater base for frequencies. 
+        seq_len (int): Length of the sequence.
+        dim (int): Dimension of the model.
+        N (int): Denomater base for frequencies. 
 
     Returns:
-        p: (Tensor) The positional encoding suitable to add embeddings.
+        p (Tensor): The positional encoding suitable to add embeddings.
     """
     P = torch.zeros(seq_len, dim)
     for pos in range(seq_len):
