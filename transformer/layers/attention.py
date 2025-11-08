@@ -34,7 +34,6 @@ class MultiHeadAttention(nn.Module):
         num_heads (int): Number of attention heads.
         d_model (int): Model's dimension.
     """
-
     def __init__(self, num_heads: int  = 6, d_model: int = 512):
         """
         Initializes a MultiHeadAttention object.
