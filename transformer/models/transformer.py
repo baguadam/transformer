@@ -115,11 +115,11 @@ class Transformer(nn.Module):
         device = src_ids.device
         dtype = torch.float32
 
-        src_pad_mask = make_padding_mask(src_ids, self.pad_id)                     # (B,1,1,Ls)
-        tgt_pad_mask = make_padding_mask(tgt_ids, self.pad_id)                     # (B,1,1,Lt)
-        causal = make_causal_mask(tgt_ids.size(1), device=device, dtype=dtype)     # (1,1,Lt,Lt)
-        tgt_mask = tgt_pad_mask * causal                                           # (B,1,Lt,Lt)
-        memory_mask = src_pad_mask                                                 # (B,1,1,Ls)
+        src_pad_mask = make_padding_mask(src_ids, self.pad_id)
+        tgt_pad_mask = make_padding_mask(tgt_ids, self.pad_id)
+        causal = make_causal_mask(tgt_ids.size(1), device=device, dtype=dtype)
+        tgt_mask = tgt_pad_mask * causal
+        memory_mask = src_pad_mask
 
         src = self.src_emb(src_ids) * math.sqrt(self.d_model)
         src = self.dropout(self._add_positional_encoding(src))
