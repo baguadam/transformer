@@ -1,6 +1,7 @@
 import torch
 from torch import Tensor
 
+
 def make_padding_mask(seq: Tensor, pad_id: int) -> Tensor:
     """
     Create a 1/0 padding mask.

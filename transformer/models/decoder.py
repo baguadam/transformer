@@ -1,9 +1,10 @@
 from torch import nn, Tensor
 from transformer.layers import MultiHeadAttention, PositionWiseFeedForward
 
+
 class DecoderLayer(nn.Module):
     """
-    Implements a single Transformer Decoder block as described in "Attention Is All You Need" paper. 
+    Implements a single Transformer Decoder block as described in "Attention Is All You Need" paper.
 
     Sequence of sublayers:
         1) Masked Multi-Head Self-Attention
@@ -13,7 +14,14 @@ class DecoderLayer(nn.Module):
         5) Position-wise Feed-Forward
         6) Add & Norm
     """
-    def __init__(self, d_model: int = 512, d_ff: int = 2048, num_heads: int = 8, dropout: float = 0.1):
+
+    def __init__(
+        self,
+        d_model: int = 512,
+        d_ff: int = 2048,
+        num_heads: int = 8,
+        dropout: float = 0.1,
+    ):
         """
         Creates an instance of DecoderLayer.
 
@@ -26,14 +34,22 @@ class DecoderLayer(nn.Module):
         super().__init__()
         self.mha = MultiHeadAttention(d_model=d_model, num_heads=num_heads)
         self.ca = MultiHeadAttention(d_model=d_model, num_heads=num_heads)
-        self.pwffn = PositionWiseFeedForward(d_model=d_model, d_ff=d_ff, dropout=dropout)
+        self.pwffn = PositionWiseFeedForward(
+            d_model=d_model, d_ff=d_ff, dropout=dropout
+        )
 
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
         self.norm3 = nn.LayerNorm(d_model)
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x: Tensor, encoder_out: Tensor, tgt_mask: Tensor | None = None, memory_mask: Tensor | None = None) -> Tensor:
+    def forward(
+        self,
+        x: Tensor,
+        encoder_out: Tensor,
+        tgt_mask: Tensor | None = None,
+        memory_mask: Tensor | None = None,
+    ) -> Tensor:
         """
         Forward pass.
 
@@ -62,9 +78,17 @@ class DecoderLayer(nn.Module):
 
 class Decoder(nn.Module):
     """
-    Implements the Decoder stack with the given number of layers. 
+    Implements the Decoder stack with the given number of layers.
     """
-    def __init__(self, num_layers: int, d_model: int = 512, d_ff: int = 2048, num_heads: int = 8, dropout: float = 0.1):
+
+    def __init__(
+        self,
+        num_layers: int,
+        d_model: int = 512,
+        d_ff: int = 2048,
+        num_heads: int = 8,
+        dropout: float = 0.1,
+    ):
         """
         Creates an instance of Decoder.
 
@@ -76,9 +100,22 @@ class Decoder(nn.Module):
             dropout (float): Dropout probability in each layer.
         """
         super().__init__()
-        self.layers = nn.ModuleList([DecoderLayer(d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout) for _ in range(num_layers)])
+        self.layers = nn.ModuleList(
+            [
+                DecoderLayer(
+                    d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout
+                )
+                for _ in range(num_layers)
+            ]
+        )
 
-    def forward(self, x: Tensor, enc_out: Tensor, tgt_mask: Tensor | None = None, memory_mask: Tensor | None = None) -> Tensor:
+    def forward(
+        self,
+        x: Tensor,
+        enc_out: Tensor,
+        tgt_mask: Tensor | None = None,
+        memory_mask: Tensor | None = None,
+    ) -> Tensor:
         """
         Forward pass.
 
@@ -89,7 +126,7 @@ class Decoder(nn.Module):
             memory_mask (optional Mask): Padding mask for encoder memory, broadcastable to (batch, heads|1, tgt_len, src_len)
 
         Returns:
-            x (Tensor): Output tensor of shape (batch_size, tgt_len, d_model) 
+            x (Tensor): Output tensor of shape (batch_size, tgt_len, d_model)
         """
         for layer in self.layers:
             x = layer(x, enc_out, tgt_mask=tgt_mask, memory_mask=memory_mask)

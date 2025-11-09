@@ -6,6 +6,7 @@ from transformer.models import Encoder, Decoder
 from transformer.layers.embeddings import calculate_positional_encoding
 from transformer.utils.masks import make_causal_mask, make_padding_mask
 
+
 class Transformer(nn.Module):
     """
     Full Encoder-Decoder Transformer Architecture
@@ -15,6 +16,7 @@ class Transformer(nn.Module):
       - encoder & decoder stacks
       - final projection to target vocab
     """
+
     def __init__(
         self,
         src_vocab: int,
@@ -49,8 +51,20 @@ class Transformer(nn.Module):
         self.tgt_emb = nn.Embedding(tgt_vocab, d_model, padding_idx=pad_id)
         self.dropout = nn.Dropout(dropout)
 
-        self.encoder = Encoder(num_layers=num_layers, d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout)
-        self.decoder = Decoder(num_layers=num_layers, d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout)
+        self.encoder = Encoder(
+            num_layers=num_layers,
+            d_model=d_model,
+            d_ff=d_ff,
+            num_heads=num_heads,
+            dropout=dropout,
+        )
+        self.decoder = Decoder(
+            num_layers=num_layers,
+            d_model=d_model,
+            d_ff=d_ff,
+            num_heads=num_heads,
+            dropout=dropout,
+        )
 
         self.proj = nn.Linear(d_model, tgt_vocab)
 

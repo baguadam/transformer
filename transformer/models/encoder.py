@@ -1,6 +1,7 @@
 from torch import nn, Tensor
 from transformer.layers import MultiHeadAttention, PositionWiseFeedForward
 
+
 class EncoderLayer(nn.Module):
     """
     Implements a single Transformer Encoder layer as described in "Attention Is All You Need" paper.
@@ -11,7 +12,14 @@ class EncoderLayer(nn.Module):
         3) Point-Wise Feed-Forward Network
         4) Add & Norm
     """
-    def __init__(self, d_model: int = 512, d_ff: int = 2048, num_heads: int = 8, dropout: float = 0.1):
+
+    def __init__(
+        self,
+        d_model: int = 512,
+        d_ff: int = 2048,
+        num_heads: int = 8,
+        dropout: float = 0.1,
+    ):
         """
         Creates an instance of EncoderLayer.
 
@@ -23,7 +31,9 @@ class EncoderLayer(nn.Module):
         """
         super().__init__()
         self.mha = MultiHeadAttention(d_model=d_model, num_heads=num_heads)
-        self.pwffn = PositionWiseFeedForward(d_model=d_model, d_ff=d_ff, dropout=dropout)
+        self.pwffn = PositionWiseFeedForward(
+            d_model=d_model, d_ff=d_ff, dropout=dropout
+        )
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
         self.dropout = nn.Dropout(dropout)
@@ -47,13 +57,21 @@ class EncoderLayer(nn.Module):
         ffn_out = self.dropout(ffn_out)
         norm2_out = self.norm2(norm1_out + ffn_out)
         return norm2_out
-    
+
 
 class Encoder(nn.Module):
     """
     Implements the Encoder stack with the given number of layers.
     """
-    def __init__(self, num_layers: int, d_model: int = 512, d_ff: int = 2048, num_heads: int = 8, dropout: float = 0.1):
+
+    def __init__(
+        self,
+        num_layers: int,
+        d_model: int = 512,
+        d_ff: int = 2048,
+        num_heads: int = 8,
+        dropout: float = 0.1,
+    ):
         """
         Creates an instance of Encoder.
 
@@ -65,16 +83,23 @@ class Encoder(nn.Module):
             dropout (float): Dropout's probability.
         """
         super().__init__()
-        self.layers = nn.ModuleList([EncoderLayer(d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout) for _ in range(num_layers)])
+        self.layers = nn.ModuleList(
+            [
+                EncoderLayer(
+                    d_model=d_model, d_ff=d_ff, num_heads=num_heads, dropout=dropout
+                )
+                for _ in range(num_layers)
+            ]
+        )
 
-    def forward(self, x: Tensor, src_mask: Tensor | None = None ) -> Tensor:
+    def forward(self, x: Tensor, src_mask: Tensor | None = None) -> Tensor:
         """
         Forward pass.
 
         Args:
             x (Tensor): Input tensor of shape (batch_size, seq_len, d_model)
             src_mask (Optional tensor): Mask, broadcastable to (batch, heads|1, src_len, src_len)
-        
+
         Returns:
             x (Tensor): Output tensor of same shape as input.
         """

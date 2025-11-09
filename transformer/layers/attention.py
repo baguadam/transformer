@@ -2,24 +2,27 @@ import torch
 from torch import Tensor
 from torch import nn
 
-def scaled_dot_product_attention(q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> tuple[Tensor, Tensor]:
+
+def scaled_dot_product_attention(
+    q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None
+) -> tuple[Tensor, Tensor]:
     """
     Calculates the scaled dot-product attention based on "Attention Is All You Need" paper.
-    
+
     Args:
         q (Tensor): Query of shape (..., L_q, d_k)
         k (Tensor): Key of shape   (..., L_k, d_k)
         v (Tensor): Value of shape (..., L_k, d_v)
         mask (optional Tensor): Optional mask parameter, broadcastable to (..., L_q, L_k)
 
-    Returns: 
+    Returns:
         out (Tensor): Attention output of shape (..., L_q, d_v)
         attn (Tensor): Attention weights of shape (..., L_q, L_k)
     """
     k_dim = k.size(-1)
-    scores = torch.matmul(q, k.transpose(-2, -1)) / (k_dim ** 0.5)
+    scores = torch.matmul(q, k.transpose(-2, -1)) / (k_dim**0.5)
     if mask is not None:
-        scores = scores.masked_fill(mask == 0, float('-inf'))
+        scores = scores.masked_fill(mask == 0, float("-inf"))
     attn = torch.softmax(scores, dim=-1)
     out = torch.matmul(attn, v)
     return out, attn
@@ -29,6 +32,7 @@ class MultiHeadAttention(nn.Module):
     """
     Implements both self-attention and cross-attention
     """
+
     def __init__(self, num_heads: int = 8, d_model: int = 512):
         """
         Initializes a MultiHeadAttention object.
@@ -46,7 +50,7 @@ class MultiHeadAttention(nn.Module):
         self.q_linear = nn.Linear(d_model, d_model)
         self.k_linear = nn.Linear(d_model, d_model)
         self.v_linear = nn.Linear(d_model, d_model)
-        self.out      = nn.Linear(d_model, d_model)
+        self.out = nn.Linear(d_model, d_model)
 
     def _split_heads(self, x: Tensor) -> Tensor:
         """
@@ -62,7 +66,9 @@ class MultiHeadAttention(nn.Module):
         batch_size, _, seq_len, _ = x.size()
         return x.transpose(1, 2).contiguous().view(batch_size, seq_len, self.d_model)
 
-    def forward(self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None) -> Tensor:
+    def forward(
+        self, q: Tensor, k: Tensor, v: Tensor, mask: Tensor | None = None
+    ) -> Tensor:
         """
         Forward pass.
 
@@ -83,4 +89,3 @@ class MultiHeadAttention(nn.Module):
         context_vector, _ = scaled_dot_product_attention(q, k, v, mask=mask)
         out_proj = self.out(self._combine_heads(context_vector))
         return out_proj
-    
