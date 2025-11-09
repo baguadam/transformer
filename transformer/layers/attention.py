@@ -10,10 +10,10 @@ def scaled_dot_product_attention(q: Tensor, k: Tensor, v: Tensor, mask: Tensor |
         q (Tensor): Query of shape (..., L_q, d_k)
         k (Tensor): Key of shape   (..., L_k, d_k)
         v (Tensor): Value of shape (..., L_k, d_v)
-        mask (optional Tensor): Optional mask parameter, broadcastable to (..., L_q, d_k)
+        mask (optional Tensor): Optional mask parameter, broadcastable to (..., L_q, L_k)
 
     Returns: 
-        out (Tensor): Attention output of shape (..., L_q, d_k)
+        out (Tensor): Attention output of shape (..., L_q, d_v)
         attn (Tensor): Attention weights of shape (..., L_q, L_k)
     """
     k_dim = k.size(-1)
@@ -27,14 +27,9 @@ def scaled_dot_product_attention(q: Tensor, k: Tensor, v: Tensor, mask: Tensor |
 
 class MultiHeadAttention(nn.Module):
     """
-    Class representing the Multi-Head Attention layer in the architecture.
-    It can be used for both self-attention and cross-attention
-
-    Attributes:
-        num_heads (int): Number of attention heads.
-        d_model (int): Model's dimension.
+    Implements both self-attention and cross-attention
     """
-    def __init__(self, num_heads: int  = 6, d_model: int = 512):
+    def __init__(self, num_heads: int = 8, d_model: int = 512):
         """
         Initializes a MultiHeadAttention object.
 
@@ -89,19 +84,3 @@ class MultiHeadAttention(nn.Module):
         out_proj = self.out(self._combine_heads(context_vector))
         return out_proj
     
-if __name__ == "__main__":
-    q = 10 * torch.rand((3, 4))
-    k = 10 * torch.rand((3, 4))
-    v = 10 * torch.rand((3, 4))
-    context_vector, attn_weights = scaled_dot_product_attention(q, k, v)
-    print("SDPA out shape:", context_vector.shape) # expect torch.Size([3, 4])
-    print("SDPA attn shape:", attn_weights.shape)  # expect torch.Size([3, 4])
-
-    num_heads = 8
-    d_model = 512
-    batch_size = 2
-    seq_len = 10
-    x = torch.rand(batch_size, seq_len, d_model)
-    mha = MultiHeadAttention(num_heads=num_heads, d_model=d_model)
-    out = mha(x, x, x)
-    print("MHA out shape:", out.shape) # expect torch.Size([2, 10, 512])
