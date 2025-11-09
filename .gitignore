@@ -1,0 +1,110 @@
+# -----------------------------
+# Python cache / build artifacts
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# -----------------------------
+# Virtual environments
+# -----------------------------
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# -----------------------------
+# IDE / editor configs
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+
+# -----------------------------
+# PyTorch / model training
+# -----------------------------
+runs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# -----------------------------
+# Logs / tests / notebooks
+# -----------------------------
+logs/
+*.log
+pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.ipynb_checkpoints
+notebooks/.ipynb_checkpoints/
+
+# -----------------------------
+# Environment / OS files
+# -----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -----------------------------
+# Temporary / misc
+# -----------------------------
+*.tmp
+*.temp
+*.bak
+.cache/
+.mypy_cache/
+.pyre/
+.pytype/
+__pypackages__/
+
+# -----------------------------
+# Project-specific
+# -----------------------------
+# Ignore saved model artifacts or data
+data/
+outputs/
+experiments/
+results/
+
+# Local configuration files (if any)
+config.yaml
+local_settings.py
